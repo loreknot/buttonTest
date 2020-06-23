@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		330818222408F1BA0073CF71 /* DropDownButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 330818212408F1BA0073CF71 /* DropDownButton.swift */; };
+		335EE64D24A1ED4C00F729CE /* LineAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 335EE64C24A1ED4C00F729CE /* LineAnimationViewController.swift */; };
 		339C90F92428A2A0001C79C8 /* DemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 339C90F82428A2A0001C79C8 /* DemoView.swift */; };
 		33A974B52407559700E41986 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A974B42407559700E41986 /* AppDelegate.swift */; };
 		33A974B72407559700E41986 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33A974B62407559700E41986 /* SceneDelegate.swift */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		330818212408F1BA0073CF71 /* DropDownButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownButton.swift; sourceTree = "<group>"; };
+		335EE64C24A1ED4C00F729CE /* LineAnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineAnimationViewController.swift; sourceTree = "<group>"; };
 		339C90F82428A2A0001C79C8 /* DemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoView.swift; sourceTree = "<group>"; };
 		33A974B12407559700E41986 /* HearderTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HearderTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		33A974B42407559700E41986 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				33A974B42407559700E41986 /* AppDelegate.swift */,
 				33A974B62407559700E41986 /* SceneDelegate.swift */,
 				33A974B82407559700E41986 /* ViewController.swift */,
+				335EE64C24A1ED4C00F729CE /* LineAnimationViewController.swift */,
 				330818212408F1BA0073CF71 /* DropDownButton.swift */,
 				33A974BA2407559700E41986 /* Main.storyboard */,
 				33A974BD2407559D00E41986 /* Assets.xcassets */,
@@ -145,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				330818222408F1BA0073CF71 /* DropDownButton.swift in Sources */,
+				335EE64D24A1ED4C00F729CE /* LineAnimationViewController.swift in Sources */,
 				33A974B92407559700E41986 /* ViewController.swift in Sources */,
 				33A974B52407559700E41986 /* AppDelegate.swift in Sources */,
 				339C90F92428A2A0001C79C8 /* DemoView.swift in Sources */,

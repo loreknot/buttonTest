@@ -18,12 +18,15 @@ class ViewController: UIViewController {
   @IBOutlet var dropButton: UIView!
   
   @IBOutlet var testButton: UIButton!
-
+  @IBOutlet var testButtonHorizonConstraint: NSLayoutConstraint!
+  
   let outCircle = UIView()
   let inCircle = UIView()
   var firstButton: UIButton!
   
   var position: CGPoint?
+  var buttonCenter: CGFloat?
+  
   var button1 = UIButton()
   var button2 = UIButton()
   var button3 = UIButton()
@@ -39,6 +42,7 @@ class ViewController: UIViewController {
     
     testButton.layer.cornerRadius = testButton.frame.height/2
     testButton.pulsate()
+    buttonCenter = testButton.frame.origin.y
     
     setCircle(size: CGSize(width: 65, height: 65), circle: outCircle, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1))
     setCircle(size: CGSize(width: 65, height: 65), circle: inCircle, color: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1))
@@ -80,7 +84,7 @@ class ViewController: UIViewController {
     
     let screenSize = UIScreen.main.bounds.size.width
     
-    
+   
     if testButton.isSelected {
       
       button1.alpha = 1
@@ -89,20 +93,19 @@ class ViewController: UIViewController {
       button4.alpha = 1
       button5.alpha = 1
 
-      buttonAnimation(buttonName: button1, endPoint: 1.25, duration: 0.5)
-      buttonAnimation(buttonName: button2, endPoint: 1.375, duration: 0.6)
-      buttonAnimation(buttonName: button3, endPoint: 1.5, duration: 0.6)
-      buttonAnimation(buttonName: button4, endPoint: 1.625, duration: 0.6)
-      buttonAnimation(buttonName: button5, endPoint: 1.75, duration: 0.6)
-      
-    
+      buttonAnimation(buttonName: button1, title: "줄", endPoint: 1.25, duration: 0.4, withFuncName: #selector(moveLineViewControler))
+      buttonAnimation(buttonName: button2, title: "아직", endPoint: 1.375, duration: 0.5)
+      buttonAnimation(buttonName: button3, title: "모", endPoint: 1.5, duration: 0.5)
+      buttonAnimation(buttonName: button4, title: "름", endPoint: 1.625, duration: 0.5)
+      buttonAnimation(buttonName: button5, title: "곧", endPoint: 1.75, duration: 0.5)
       
       animateCircle(duration: 0.3, circle: inCircle, width: screenSize * 1.01, height: screenSize * 1.01, alpha: 1)
       animateCircle(duration: 0.4, circle: outCircle, width: screenSize * 1.4, height: screenSize * 1.4, alpha: 1)
       
       UIView.animate(withDuration: 0.2) {
-        self.view.layoutIfNeeded()
         self.testButton.frame.origin.y = self.view.frame.size.height * 0.9
+        self.testButtonHorizonConstraint.constant = 60
+        
         self.inCircle.center = self.testButton.center
         self.outCircle.center = self.testButton.center
       }
@@ -112,24 +115,19 @@ class ViewController: UIViewController {
      
       animateCircle(duration: 0.6, circle: inCircle, width: 85, height: 85, alpha: 1)
       animateCircle(duration: 0.4, circle: outCircle, width: 0, height: 0, alpha: 0)
-      fadeButtonAnimation(button1)
-      fadeButtonAnimation(button2)
-      fadeButtonAnimation(button3)
-      fadeButtonAnimation(button4)
-      fadeButtonAnimation(button5)
+      fadeOutButtonAnimation()
       
       for layer in view.layer.sublayers! {
           if layer.name == "circle" {
                layer.removeFromSuperlayer()
           }
       }
-      view.layer.removeAllAnimations()
-      
+    
       UIView.animate(withDuration: 0.2) {
-        self.view.layoutIfNeeded()
+        self.testButton.center = CGPoint(x: self.view.frame.width / 2, y: self.view.frame.height * 0.85)
+        self.testButtonHorizonConstraint.constant = 0
         self.inCircle.center = self.testButton.center
         self.outCircle.center = self.testButton.center
-        
       }
     }
   
@@ -149,33 +147,32 @@ class ViewController: UIViewController {
     shapeLayer.name = "circle"
     self.view.layer.addSublayer(shapeLayer)
     
-    
     return circlePath
   }
 
   
-  func setButton(buttonName: UIButton) -> UIButton {
+  func setButton(buttonName: UIButton, title: String, withfuncName funcName: Selector) -> UIButton {
     let aniButton = buttonName
     aniButton.frame.size = CGSize(width: 35, height: 35)
     aniButton.layer.position = position! //CGPoint(x: view.frame.size.width * 0.3, y: view.frame.size.height * 0.7)
     aniButton.backgroundColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
-    aniButton.setTitle("줄", for: .normal )
+    aniButton.setTitle(title, for: .normal )
     aniButton.layer.cornerRadius = 10
     view.addSubview(aniButton)
     
-    aniButton.addTarget(self, action: #selector(aniButtonClicked), for: .touchUpInside)
-    
+    aniButton.addTarget(self, action: funcName, for: .touchUpInside)
+     
     return aniButton
   }
 
-  func buttonAnimation(buttonName: UIButton, endPoint: Double, duration: CFTimeInterval ) {
+  func buttonAnimation(buttonName: UIButton, title: String, endPoint: Double, duration: CFTimeInterval, withFuncName funcName: Selector = #selector(aniButtonClicked) ) {
     
     let buttonAnimation = CAKeyframeAnimation(keyPath: "position")
     buttonAnimation.duration = duration
     buttonAnimation.path = circlePath(endPoint: endPoint).cgPath
     buttonAnimation.rotationMode = .none
     buttonAnimation.timingFunctions = [CAMediaTimingFunction(name: .linear)]
-    setButton(buttonName: buttonName).layer.add(buttonAnimation, forKey: "nil")
+    setButton(buttonName: buttonName, title: title, withfuncName: funcName).layer.add(buttonAnimation, forKey: "nil")
     
     
   }
@@ -205,14 +202,46 @@ class ViewController: UIViewController {
     }
   }
   
-  func fadeButtonAnimation(_ button: UIButton) {
-    
-    view.layoutIfNeeded()
+  func fadeOutButtonForSelectedButton(_ button: UIButton) {
+     UIView.animate(withDuration: 0.3) {
+       button.center = CGPoint(x: self.view.frame.size.width / 2, y: self.view.frame.size.height)
+       button.alpha = 0
+     }
+  }
+  func fadeOutButtonAnimationForSelectedButton() {
+    fadeOutButtonForSelectedButton(button1)
+    fadeOutButtonForSelectedButton(button2)
+    fadeOutButtonForSelectedButton(button3)
+    fadeOutButtonForSelectedButton(button4)
+    fadeOutButtonForSelectedButton(button5)
+  }
+  
+  func fadeOutButton(_ button: UIButton) {
     UIView.animate(withDuration: 0.3) {
-      button.center = CGPoint(x: self.view.frame.size.width / 2, y: self.view.frame.size.height * 0.9)
+      button.center = CGPoint(x: self.view.frame.size.width / 2, y: self.view.frame.size.height * 0.85)
       button.alpha = 0
     }
   }
+  func fadeOutButtonAnimation() {
+    fadeOutButton(button1)
+    fadeOutButton(button2)
+    fadeOutButton(button3)
+    fadeOutButton(button4)
+    fadeOutButton(button5)
+  }
+  
+  func saveButtonPosition(_ button: UIButton) {
+    
+    let position: CGPoint?
+    position = button.layer.position
+    
+    view.layoutIfNeeded()
+    UIView.animate(withDuration: 0.3) {
+      button.center = position!
+      button.alpha = 1
+    }
+  }
+  
   
   
   @objc func aniButtonClicked() {
@@ -222,6 +251,11 @@ class ViewController: UIViewController {
     self.present(alert, animated: false)
   }
     
+  @objc func moveLineViewControler() {
+    let vc = self.storyboard?.instantiateViewController(identifier: "line") as! LineAnimationViewController
+    
+    present(vc, animated: true)
+  }
   
 }
 
@@ -254,9 +288,10 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     let minConstraint: CGFloat = 0
     let maxConstriant: CGFloat = 40
     let animationStarOffset: CGFloat = 130
-    
+  
     // 애니매이션 시작 길이보다 테이블 뷰의 y 값이 커질 때
     if scrollView.contentOffset.y > animationStarOffset  {
+      
       
       view.layoutIfNeeded()
       headerHeightConstraint.constant = minConstraint // 헤더의 길이 = 최소높이
@@ -270,10 +305,11 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         self.view.layoutIfNeeded()
     
-        self.testButton.frame.origin.y = 850
+        self.testButton.frame.origin.y = self.view.frame.height * 1.2
         
         self.inCircle.center = self.testButton.center
         self.outCircle.center = self.testButton.center
+        self.fadeOutButtonAnimationForSelectedButton()
         
       }, completion: nil)
       
@@ -295,6 +331,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         self.inCircle.center = self.testButton.center
         self.outCircle.center = self.testButton.center
+        
         
       }, completion: { _ in
         let screenSize = UIScreen.main.bounds.size.width
